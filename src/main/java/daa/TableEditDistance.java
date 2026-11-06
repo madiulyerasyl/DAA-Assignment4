@@ -2,13 +2,15 @@ package daa;
 
 public class TableEditDistance {
 
-    // State: dp[i][j] is the minimum edits needed to change
-    // the first i characters of a into the first j characters of b.
-    // Transition: take the minimum of insert, delete and replace;
-    // matching characters have zero replacement cost.
+    private static long operations = 0;
+
+    // State: dp[i][j] stores the edit distance between prefixes.
+    // Transition: minimum of insertion, deletion and replacement.
     // Base case: dp[i][0] = i and dp[0][j] = j.
 
     public static int distance(String a, String b) {
+
+        operations = 0;
 
         int n = a.length();
         int m = b.length();
@@ -35,18 +37,27 @@ public class TableEditDistance {
 
                 dp[i][j] = Math.min(insert,
                         Math.min(delete, replace));
+
+                // Count each computed DP cell.
+                operations++;
             }
         }
 
         return dp[n][m];
     }
 
+    public static long getOperations() {
+        return operations;
+    }
+
     public static void main(String[] args) {
 
-        System.out.println(distance("cat", "cut"));
-        System.out.println(distance("kitten", "sitting"));
-        System.out.println(distance("flaw", "lawn"));
-        System.out.println(distance("intention", "execution"));
-        System.out.println(distance("", "abc"));
+        System.out.println("Distance: " +
+                distance("cat", "cut"));
+        System.out.println("Operations: " + getOperations());
+
+        System.out.println("Distance: " +
+                distance("kitten", "sitting"));
+        System.out.println("Operations: " + getOperations());
     }
 }
