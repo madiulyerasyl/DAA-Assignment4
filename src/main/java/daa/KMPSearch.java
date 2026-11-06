@@ -1,3 +1,4 @@
+
 package daa;
 
 import java.util.ArrayList;
@@ -6,7 +7,8 @@ import java.util.List;
 
 public class KMPSearch {
 
-    // Build the Longest Proper Prefix which is also Suffix array.
+    private static long operations = 0;
+
     public static int[] lps(String pattern) {
 
         if (pattern.isEmpty()) {
@@ -21,6 +23,9 @@ public class KMPSearch {
         int i = 1;
 
         while (i < m) {
+
+            // Count comparison during LPS preprocessing.
+            operations++;
 
             if (pattern.charAt(i) == pattern.charAt(len)) {
                 len++;
@@ -41,6 +46,8 @@ public class KMPSearch {
 
     public static List<Integer> search(String text, String pattern) {
 
+        operations = 0;
+
         if (pattern.isEmpty()) {
             throw new IllegalArgumentException(
                     "Pattern must not be empty");
@@ -55,26 +62,30 @@ public class KMPSearch {
             return positions;
         }
 
-        int[] lps = lps(pattern);
+        int[] prefix = lps(pattern);
 
         int i = 0;
         int j = 0;
 
         while (i < n) {
 
+            // Count each text-pattern character comparison.
+            operations++;
+
             if (text.charAt(i) == pattern.charAt(j)) {
+
                 i++;
                 j++;
-            }
 
-            if (j == m) {
-                positions.add(i - j);
-                j = lps[j - 1];
-            } else if (i < n &&
-                    text.charAt(i) != pattern.charAt(j)) {
+                if (j == m) {
+                    positions.add(i - j);
+                    j = prefix[j - 1];
+                }
+
+            } else {
 
                 if (j != 0) {
-                    j = lps[j - 1];
+                    j = prefix[j - 1];
                 } else {
                     i++;
                 }
@@ -84,13 +95,26 @@ public class KMPSearch {
         return positions;
     }
 
+    public static long getOperations() {
+        return operations;
+    }
+
     public static void main(String[] args) {
 
-        System.out.println(Arrays.toString(lps("AAACAAAA")));
-        System.out.println(Arrays.toString(lps("ABABCABAB")));
+        System.out.println(Arrays.toString(
+                lps("AAACAAAA")));
 
-        System.out.println(search("ABABDABACDABABCABAB", "ABABCABAB"));
-        System.out.println(search("AAAAA", "AA"));
-        System.out.println(search("ABABABA", "ABA"));
+        System.out.println(Arrays.toString(
+                lps("ABABCABAB")));
+
+        System.out.println("Matches: " +
+                search("ABABABA", "ABA"));
+
+        System.out.println("Operations: " + getOperations());
+
+        System.out.println("Matches: " +
+                search("AAAAA", "AA"));
+
+        System.out.println("Operations: " + getOperations());
     }
 }

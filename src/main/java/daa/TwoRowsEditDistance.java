@@ -2,14 +2,16 @@ package daa;
 
 public class TwoRowsEditDistance {
 
-    // State: prev[j] and curr[j] represent edit distances
+    private static long operations = 0;
+
+    // State: prev[j] and curr[j] store edit distances
     // between prefixes of the two strings.
-    // Transition: use insertion, deletion and replacement,
-    // taking the minimum cost.
-    // Base case: an empty prefix has distance equal
-    // to the length of the other prefix.
+    // Transition: minimum of insert, delete and replace.
+    // Base case: an empty prefix requires the other length.
 
     public static int distance(String a, String b) {
+
+        operations = 0;
 
         // Keep the shorter string in b to save memory.
         if (b.length() > a.length()) {
@@ -43,6 +45,9 @@ public class TwoRowsEditDistance {
 
                 curr[j] = Math.min(insert,
                         Math.min(delete, replace));
+
+                // Count each computed DP cell.
+                operations++;
             }
 
             int[] temp = prev;
@@ -53,13 +58,18 @@ public class TwoRowsEditDistance {
         return prev[m];
     }
 
+    public static long getOperations() {
+        return operations;
+    }
+
     public static void main(String[] args) {
 
-        System.out.println(distance("cat", "cut"));
-        System.out.println(distance("kitten", "sitting"));
-        System.out.println(distance("flaw", "lawn"));
-        System.out.println(distance("intention", "execution"));
-        System.out.println(distance("", "abc"));
-        System.out.println(distance("abc", "abc"));
+        System.out.println("Distance: " +
+                distance("cat", "cut"));
+        System.out.println("Operations: " + getOperations());
+
+        System.out.println("Distance: " +
+                distance("kitten", "sitting"));
+        System.out.println("Operations: " + getOperations());
     }
 }

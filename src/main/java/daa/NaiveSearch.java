@@ -5,7 +5,11 @@ import java.util.List;
 
 public class NaiveSearch {
 
+    private static long operations = 0;
+
     public static List<Integer> search(String text, String pattern) {
+
+        operations = 0;
 
         if (pattern.isEmpty()) {
             throw new IllegalArgumentException(
@@ -25,8 +29,15 @@ public class NaiveSearch {
 
             int j = 0;
 
-            while (j < m &&
-                    text.charAt(i + j) == pattern.charAt(j)) {
+            while (j < m) {
+
+                // Count every character comparison.
+                operations++;
+
+                if (text.charAt(i + j) != pattern.charAt(j)) {
+                    break;
+                }
+
                 j++;
             }
 
@@ -38,11 +49,18 @@ public class NaiveSearch {
         return positions;
     }
 
+    public static long getOperations() {
+        return operations;
+    }
+
     public static void main(String[] args) {
 
-        System.out.println(search("ABABABA", "ABA"));
-        System.out.println(search("AAAAA", "AA"));
-        System.out.println(search("ABABDABACDABABCABAB", "ABABCABAB"));
-        System.out.println(search("HELLO", "XYZ"));
+        System.out.println("Matches: " +
+                search("ABABABA", "ABA"));
+        System.out.println("Operations: " + getOperations());
+
+        System.out.println("Matches: " +
+                search("AAAAA", "AA"));
+        System.out.println("Operations: " + getOperations());
     }
 }
