@@ -1,17 +1,22 @@
-
 package daa;
 
 public class RecursiveEditDistance {
+
+    private static long operations = 0;
 
     // State: distance(i, j) is the minimum edits between prefixes.
     // Transition: match -> diagonal; otherwise insert/delete/replace.
     // Base case: an empty prefix requires the other prefix's length.
 
     public static int distance(String a, String b) {
+        operations = 0;
         return solve(a, b, a.length(), b.length());
     }
 
     private static int solve(String a, String b, int i, int j) {
+
+        // Count every recursive call.
+        operations++;
 
         if (i == 0) return j;
         if (j == 0) return i;
@@ -27,10 +32,20 @@ public class RecursiveEditDistance {
         return 1 + Math.min(insert, Math.min(delete, replace));
     }
 
+    public static long getOperations() {
+        return operations;
+    }
+
     public static void main(String[] args) {
-        System.out.println(distance("cat", "cut"));
-        System.out.println(distance("kitten", "sitting"));
-        System.out.println(distance("flaw", "lawn"));
-        System.out.println(distance("", "abc"));
+
+        System.out.println("Distance: " +
+                distance("cat", "cut"));
+
+        System.out.println("Operations: " + getOperations());
+
+        System.out.println("Distance: " +
+                distance("kitten", "sitting"));
+
+        System.out.println("Operations: " + getOperations());
     }
 }
